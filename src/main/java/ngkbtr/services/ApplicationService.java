@@ -1,21 +1,19 @@
 package ngkbtr.services;
 
-import ngkbtr.controller.request.UserAuthRequest;
-import ngkbtr.controller.request.UserRegistrationRequest;
-import ngkbtr.controller.request.VKUserAuthRequest;
-import ngkbtr.flowmanager.AuthenticationTokenFlowManager;
-import ngkbtr.flowmanager.UserAuthFlowManager;
-import ngkbtr.flowmanager.UserRegistrationFlowManager;
-import ngkbtr.flowmanager.VKUserAuthFlowManager;
+import ngkbtr.controller.request.*;
+import ngkbtr.flowmanager.*;
 import ngkbtr.model.User;
 import ngkbtr.model.exception.FailedAuthenticationException;
 import ngkbtr.model.exception.TokenExpiredException;
+import ngkbtr.flowmanager.CityAutocompleteObject;
+import ngkbtr.flowmanager.FlightDirection;
+import ngkbtr.model.trip.Trip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.ValidationException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ApplicationService {
@@ -24,19 +22,24 @@ public class ApplicationService {
     private final AuthenticationTokenFlowManager authenticationTokenFlowManager;
     private final VKUserAuthFlowManager vkUserAuthFlowManager;
 
+    private final AviasalesFlowManager aviasalesFlowManager;
+    private final HotellookFlowManager hotellookFlowManager;
+
     @Autowired
-    public ApplicationService(UserRegistrationFlowManager registrationFlowManager, UserAuthFlowManager authFlowManager, AuthenticationTokenFlowManager authenticationTokenFlowManager, VKUserAuthFlowManager vkUserAuthFlowManager) {
+    public ApplicationService(UserRegistrationFlowManager registrationFlowManager, UserAuthFlowManager authFlowManager, AuthenticationTokenFlowManager authenticationTokenFlowManager, VKUserAuthFlowManager vkUserAuthFlowManager, AviasalesFlowManager aviasalesFlowManager, HotellookFlowManager hotellookFlowManager) {
         this.registrationFlowManager = registrationFlowManager;
         this.authFlowManager = authFlowManager;
         this.authenticationTokenFlowManager = authenticationTokenFlowManager;
         this.vkUserAuthFlowManager = vkUserAuthFlowManager;
+        this.aviasalesFlowManager = aviasalesFlowManager;
+        this.hotellookFlowManager = hotellookFlowManager;
     }
 
     public void getNewAccessToken(String refreshToken, HttpServletResponse response) throws FailedAuthenticationException, TokenExpiredException {
         authenticationTokenFlowManager.getNewAccessToken(refreshToken, response);
     }
 
-    public User registerUser(UserRegistrationRequest request, HttpServletResponse response) throws ValidationException {
+    public User registerUser(UserRegistrationRequest request, HttpServletResponse response){
         return registrationFlowManager.registerUser(request, response);
     }
 
@@ -46,5 +49,19 @@ public class ApplicationService {
 
     public User authVKUser(VKUserAuthRequest request, HttpServletResponse response) throws FailedAuthenticationException {
         return vkUserAuthFlowManager.authVKUser(request, response);
+    }
+
+    ////
+
+    public List<FlightDirection> getFlights(User user, GetFlightsRequest request){
+        return aviasalesFlowManager.getDirectionParameters(user, request);
+    }
+
+    public Set<CityAutocompleteObject> getCityAutocomplete(User user, GetCityAutocompleteRequest request){
+        return aviasalesFlowManager.getCityAutocomplete(user, request);
+    }
+
+    public List<Hotel> getHotels(User user, GetHotelsRequest request){
+        return hotellookFlowManager.getHotels(user, request);
     }
 }

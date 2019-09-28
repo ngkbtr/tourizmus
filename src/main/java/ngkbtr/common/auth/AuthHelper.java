@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.validation.ValidationException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -28,7 +27,7 @@ public class AuthHelper {
 
     public static String createUserId(String source) {
         if (StringUtils.isEmpty(source)) {
-            throw new ValidationException("Login must not be empty");
+            throw new RuntimeException("Login must not be empty");
         }
         return DigestUtils.md5DigestAsHex(source.getBytes());
     }
@@ -125,7 +124,7 @@ public class AuthHelper {
 
     public static String hashPassword(String password) {
         if (StringUtils.isEmpty(password)) {
-            throw new ValidationException("Password must not be empty");
+            throw new RuntimeException("Password must not be empty");
         }
         return DigestUtils.md5DigestAsHex(password.getBytes());
     }

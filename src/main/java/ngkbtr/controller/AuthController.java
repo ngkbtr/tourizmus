@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.ValidationException;
 
 @Controller
 public class AuthController {
@@ -37,7 +36,7 @@ public class AuthController {
 
     @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
     @ResponseBody
-    public Object signUp(@RequestBody UserRegistrationRequest request, HttpServletResponse response) throws ValidationException {
+    public Object signUp(@RequestBody UserRegistrationRequest request, HttpServletResponse response) {
         return applicationService.registerUser(request, response);
     }
 

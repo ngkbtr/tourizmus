@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.ValidationException;
 
 @Service
 public class UserRegistrationFlowManager {
@@ -28,13 +27,13 @@ public class UserRegistrationFlowManager {
         this.validationService = validationService;
     }
 
-    public User registerUser(UserRegistrationRequest request, HttpServletResponse response) throws ValidationException {
+    public User registerUser(UserRegistrationRequest request, HttpServletResponse response) {
         String email = request.getEmail();
         if(StringUtils.isEmpty(email)){
-            throw new ValidationException("Email must be presented");
+            throw new RuntimeException("Email must be presented");
         }
         if (validationService.checkUserAlredyExists(email)) {
-            throw new ValidationException("User with email '" + email + "' is already registred");
+            throw new RuntimeException("User with email '" + email + "' is already registred");
         }
 
         User user = new User(AuthHelper.createUserId(email));
