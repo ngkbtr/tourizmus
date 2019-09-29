@@ -1,6 +1,7 @@
 package ngkbtr.model.trip;
 
 import ngkbtr.flowmanager.Entertainment;
+import ngkbtr.flowmanager.EntertainmentsCnt;
 import ngkbtr.flowmanager.FlightDirection;
 import ngkbtr.flowmanager.Hotel;
 
@@ -41,7 +42,7 @@ public class Trip {
         return hotels;
     }
 
-    public List<Entertainment> getEntertainments() {
+    public List<Entertainment> getEntertainment() {
         return entertainments;
     }
 
@@ -91,7 +92,7 @@ public class Trip {
             return this;
         }
 
-        public Builder setEntertainments(List<Entertainment> entertainments) {
+        public Builder setEntertainment(List<Entertainment> entertainments) {
             this.entertainments = entertainments;
             return this;
         }

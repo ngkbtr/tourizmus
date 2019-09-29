@@ -2,6 +2,7 @@ package ngkbtr.flowmanager;
 
 import ngkbtr.common.auth.AuthHelper;
 import ngkbtr.common.auth.model.Token;
+import ngkbtr.controller.request.AuthTokenResponse;
 import ngkbtr.controller.request.UserRegistrationRequest;
 import ngkbtr.model.User;
 import ngkbtr.model.auth.SecurityInfo;
@@ -27,7 +28,7 @@ public class UserRegistrationFlowManager {
         this.validationService = validationService;
     }
 
-    public User registerUser(UserRegistrationRequest request, HttpServletResponse response) {
+    public AuthTokenResponse registerUser(UserRegistrationRequest request, HttpServletResponse response) {
         String email = request.getEmail();
         if(StringUtils.isEmpty(email)){
             throw new RuntimeException("Email must be presented");
@@ -51,9 +52,15 @@ public class UserRegistrationFlowManager {
         SecurityInfo securityInfo = new SecurityInfo(user.getUid(), request.getPassword());
         storageService.saveSecurityInfo(securityInfo);
         Token authToken = AuthHelper.createAccessToken(user.getUid());
-        response.addCookie(new Cookie("access_token", authToken.getToken()));
+        /*response.addCookie(new Cookie("access_token", authToken.getToken()));
         response.addCookie(new Cookie("expires_in", authToken.getExpiration()));
         response.addCookie(new Cookie("refresh_token", securityInfo.getRefreshToken()));
-        return user;
+        return user;*/
+        AuthTokenResponse authTokenResponse = new AuthTokenResponse();
+        authTokenResponse.setAccessToken(authToken.getToken());
+        authTokenResponse.setRefreshToken(securityInfo.getRefreshToken());
+        authTokenResponse.setExpiresIn(authToken.getExpiration());
+
+        return authTokenResponse;
     }
 }

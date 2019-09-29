@@ -1,8 +1,6 @@
 package ngkbtr.controller;
 
-import ngkbtr.controller.request.GetCityAutocompleteRequest;
-import ngkbtr.controller.request.GetFlightsRequest;
-import ngkbtr.controller.request.GetHotelsRequest;
+import ngkbtr.controller.request.*;
 import ngkbtr.model.User;
 import ngkbtr.model.auth.AuthUser;
 import ngkbtr.services.ApplicationService;
@@ -40,6 +38,12 @@ public class MainController {
         return applicationService.getCityAutocomplete(user, request);
     }
 
+    @RequestMapping(value = "/redirect-to-shop", method = RequestMethod.POST)
+    @ResponseBody
+    public Object redirectToShop(@AuthUser User user, @RequestBody RedirectUrlRequest request){
+        return applicationService.redirectToBuyTicket(user, request);
+    }
+
     //HOTELS
 
     @RequestMapping(value = "/get-hotels", method = RequestMethod.POST)
@@ -48,4 +52,25 @@ public class MainController {
         return applicationService.getHotels(user, request);
     }
 
+    //TRIPS
+
+    @RequestMapping(value = "/get-trips-by-country", method = RequestMethod.POST)
+    @ResponseBody
+    public Object getTripsByCountry(@AuthUser User user, @RequestBody GetTripRequest request){
+        return applicationService.getTripsByCountry(user, request);
+    }
+
+    @RequestMapping(value = "/get-trips-by-city", method = RequestMethod.POST)
+    @ResponseBody
+    public Object getTripsByCity(@AuthUser User user, @RequestBody GetTripRequest request){
+        return applicationService.getTripsByCity(user, request);
+    }
+
+    //ENTERTAINMENTS
+
+    @RequestMapping(value = "/get-entertainments", method = RequestMethod.POST)
+    @ResponseBody
+    public Object getTripsByCity(@AuthUser User user, @RequestBody GetEntertainmentRequest request){
+        return applicationService.getEntertainments(user, request);
+    }
 }

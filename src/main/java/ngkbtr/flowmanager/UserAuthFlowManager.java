@@ -2,6 +2,7 @@ package ngkbtr.flowmanager;
 
 import ngkbtr.common.auth.AuthHelper;
 import ngkbtr.common.auth.model.Token;
+import ngkbtr.controller.request.AuthTokenResponse;
 import ngkbtr.controller.request.UserAuthRequest;
 import ngkbtr.model.User;
 import ngkbtr.model.auth.SecurityInfo;
@@ -26,7 +27,7 @@ public class UserAuthFlowManager {
         this.validationService = validationService;
     }
 
-    public User authUser(UserAuthRequest request, HttpServletResponse response) throws FailedAuthenticationException {
+    public AuthTokenResponse authUser(UserAuthRequest request, HttpServletResponse response) throws FailedAuthenticationException {
         User user = storageService.getUserById(AuthHelper.createUserId(request.getEmail()));
         if(user != null){
             SecurityInfo securityInfo = storageService.getSecurityInfoById(user.getUid());
@@ -34,10 +35,16 @@ public class UserAuthFlowManager {
                 Token authToken = AuthHelper.createAccessToken(securityInfo.getUid());
                 Token refreshToken = securityInfo.updateRefreshToken(securityInfo.getUid());
                 storageService.saveSecurityInfo(securityInfo);
-                response.addCookie(new Cookie("access_token", authToken.getToken()));
+                /*response.addCookie(new Cookie("access_token", authToken.getToken()));
                 response.addCookie(new Cookie("expires_in", authToken.getExpiration()));
                 response.addCookie(new Cookie("refresh_token", refreshToken.getToken()));
-                return user;
+                return user;*/
+                AuthTokenResponse authTokenResponse = new AuthTokenResponse();
+                authTokenResponse.setAccessToken(authToken.getToken());
+                authTokenResponse.setRefreshToken(refreshToken.getToken());
+                authTokenResponse.setExpiresIn(authToken.getExpiration());
+
+                return authTokenResponse;
             } else {
                 throw new FailedAuthenticationException("Password is incorrect");
             }

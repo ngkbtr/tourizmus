@@ -1,16 +1,15 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ngkbtr.controller.request.GetFlightsRequest;
-import ngkbtr.controller.request.GetHotelsRequest;
-import ngkbtr.controller.request.GetTripRequest;
+import ngkbtr.controller.request.*;
 import ngkbtr.flowmanager.*;
 import ngkbtr.model.User;
 import ngkbtr.model.trip.BasicTrips;
+import ngkbtr.model.trip.Trip;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Ignore
 public class TestApp {
@@ -20,13 +19,10 @@ public class TestApp {
     @Test
     public void autocomplete(){
         /*AviasalesFlowManager service = new AviasalesFlowManager();
-        GetFlightsRequest request = new GetFlightsRequest();
-        request.setSource("LED");
-        request.setDestination("MOW");
-        request.setStartDate("2019-10-26");
-        request.setDuration("10");
-        List<FlightDirection> directionParameters = service.getDirectionParameters(new User("123"), request);
-        for (Object obj: directionParameters){
+        GetCityAutocompleteRequest request = new GetCityAutocompleteRequest();
+        request.setTerm("Моск");
+        Set<CityAutocompleteObject> cityAutocomplete = service.getCityAutocomplete(new User("123"), request);
+        for (CityAutocompleteObject obj: cityAutocomplete){
             System.out.println(GSON.toJson(obj));
         }*/
 
@@ -44,11 +40,25 @@ public class TestApp {
             System.out.println(GSON.toJson(hotel));
         }*/
 
-        TripFlowManager tripManager = new TripFlowManager(new AviasalesFlowManager(), new HotellookFlowManager(), new TripsterFlowManager());
+        /*TripFlowManager tripManager = new TripFlowManager(new AviasalesFlowManager(), new HotellookFlowManager(), new TripsterFlowManager());
         GetTripRequest request = new GetTripRequest();
-        request.setSource("MOW");
-        request.setDestination("FR");
-        BasicTrips trips = tripManager.getBasicTrips(new User("123"), request);
-        System.out.println(GSON.toJson(trips));
+        request.setSource("LED");
+        request.setDestination("IEV");
+        BasicTrips trips = tripManager.getBasicTripsByCity(new User("123"), request);
+        //List<Trip> trips = tripManager.getBasicTripsByCountry(new User("123"), request);
+        System.out.println(GSON.toJson(trips));*/
+
+        /*AviasalesFlowManager service = new AviasalesFlowManager();
+        RedirectUrlRequest request1 = new RedirectUrlRequest();
+        request1.setFlight(trips.getCheapTrip().getFlight());
+        RedirectUrlResponse redirectUrlResponse = service.redirectUserToBuyTicket(new User("123"), request1);
+        System.out.println(redirectUrlResponse.getUrl());*/
+
+        TripsterFlowManager tripsterFlowManager = new TripsterFlowManager();
+        GetEntertainmentRequest request1 = new GetEntertainmentRequest();
+        request1.setLocation("PAR");
+        List<Entertainment> entertainments = tripsterFlowManager.getEntertainments(new User("123"), request1.getLocation(), null, null, null, 20L);
+        System.out.println(GSON.toJson(entertainments));
+
     }
 }

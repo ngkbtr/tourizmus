@@ -1,6 +1,7 @@
 package ngkbtr.flowmanager;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class FlightDirection {
 
@@ -95,7 +96,7 @@ public class FlightDirection {
         return airline;
     }
 
-    class Flight{
+    static class Flight{
        private String origin;
        private String number;
        private Long duration;
@@ -141,5 +142,18 @@ public class FlightDirection {
         public String getAircraft() {
             return aircraft;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlightDirection that = (FlightDirection) o;
+        return Objects.equals(destination, that.destination);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(destination);
     }
 }

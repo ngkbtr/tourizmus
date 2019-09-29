@@ -3,6 +3,7 @@ package ngkbtr.flowmanager;
 import ngkbtr.common.auth.AuthHelper;
 import ngkbtr.common.auth.model.AuthPayload;
 import ngkbtr.common.auth.model.Token;
+import ngkbtr.controller.request.AuthTokenResponse;
 import ngkbtr.model.auth.SecurityInfo;
 import ngkbtr.model.exception.FailedAuthenticationException;
 import ngkbtr.model.exception.TokenExpiredException;
@@ -26,7 +27,7 @@ public class AuthenticationTokenFlowManager {
         this.storageService = storageService;
     }
 
-    public void getNewAccessToken(String refreshToken, HttpServletResponse response) throws TokenExpiredException, FailedAuthenticationException {
+    public AuthTokenResponse getNewAccessToken(String refreshToken, HttpServletResponse response) throws TokenExpiredException, FailedAuthenticationException {
         if (StringUtils.hasText(refreshToken)) {
             validateRefreshToken(refreshToken);
             AuthPayload payload = AuthHelper.parseTokenPayload(refreshToken);
@@ -37,10 +38,18 @@ public class AuthenticationTokenFlowManager {
             Token newAuthToken = AuthHelper.createAccessToken(securityInfo.getUid());
             Token newRefreshToken = securityInfo.updateRefreshToken(securityInfo.getUid());
             storageService.saveSecurityInfo(securityInfo);
-            response.addCookie(new Cookie("access_token", newAuthToken.getToken()));
+            /*response.addCookie(new Cookie("access_token", newAuthToken.getToken()));
             response.addCookie(new Cookie("expires_in", newAuthToken.getExpiration()));
             response.addCookie(new Cookie("refresh_token", newRefreshToken.getToken()));
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.setStatus(HttpServletResponse.SC_CREATED);*/
+            AuthTokenResponse authTokenResponse = new AuthTokenResponse();
+            authTokenResponse.setAccessToken(newAuthToken.getToken());
+            authTokenResponse.setRefreshToken(newRefreshToken.getToken());
+            authTokenResponse.setExpiresIn(newAuthToken.getExpiration());
+
+            return authTokenResponse;
+        } else {
+            throw new FailedAuthenticationException();
         }
     }
 }

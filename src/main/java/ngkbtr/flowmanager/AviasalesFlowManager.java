@@ -3,6 +3,8 @@ package ngkbtr.flowmanager;
 import com.google.gson.Gson;
 import ngkbtr.controller.request.GetCityAutocompleteRequest;
 import ngkbtr.controller.request.GetFlightsRequest;
+import ngkbtr.controller.request.RedirectUrlRequest;
+import ngkbtr.controller.request.RedirectUrlResponse;
 import ngkbtr.model.User;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -25,6 +27,7 @@ public class AviasalesFlowManager {
 
     private static final String GET_FLIGHTS_API_URL = "https://lyssa.aviasales.ru/v2/widget/month/?origin_iata=%s&destination_iata=%s&one_way=%s&min_trip_duration=%s&max_trip_duration=%s&depart_month=%s";
     private static final String GET_CITY_AUTOCOMPLETE_URL = "http://autocomplete.travelpayouts.com/places2?term=%s&locale=ru";
+    private static final String REDIRECT_TO_BUY_URL = "https://www.aviasales.ru/search/%s%s%s%s%s%s1?ticket=%s";
     private static final String AUTH_TOKEN = "5c14f2fc70f4e1a246019c8080a225a1";
 
     public Set<CityAutocompleteObject> getCityAutocomplete(User user, GetCityAutocompleteRequest request){
@@ -163,6 +166,26 @@ public class AviasalesFlowManager {
             }
         }
         return result;
+    }
+
+    public RedirectUrlResponse redirectUserToBuyTicket(User user, RedirectUrlRequest request){
+        //<origin_iata> <depart_day> <depart_month> <destination_iata> <return_day> <return_month> 1?ticket=<signature>
+        FlightDirection direction = request.getFlight();
+        return new RedirectUrlResponse(String.format(REDIRECT_TO_BUY_URL, direction.getOrigin(),
+                getDay(direction.getDepart_date()),
+                getMonth(direction.getDepart_date()),
+                direction.getDestination(),
+                getDay(direction.getReturn_date()),
+                getMonth(direction.getReturn_date()),
+                direction.getSignature()));
+    }
+
+    private static String getDay(String date){
+        return date.split("-")[2];
+    }
+
+    private static String getMonth(String date){
+        return date.split("-")[1];
     }
 
     private static String getFirstDayOfMonth(String startDay){

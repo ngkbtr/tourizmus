@@ -9,6 +9,10 @@ public class CityAutocompleteObject {
     private String cityName;
     @JsonProperty("city_code")
     private String cityCode;
+    @JsonProperty("country_name")
+    private String countryName;
+    @JsonProperty("country_code")
+    private String countryCode;
 
     public String getCityName() {
         return cityName;
@@ -16,6 +20,30 @@ public class CityAutocompleteObject {
 
     public String getCityCode() {
         return cityCode;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     @Override

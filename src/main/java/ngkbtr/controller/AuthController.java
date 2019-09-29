@@ -30,8 +30,8 @@ public class AuthController {
 
     @RequestMapping(value = "/refresh-token", method = RequestMethod.GET)
     @ResponseBody
-    public void refreshToken(@RequestHeader("Bearer") String refreshToken, HttpServletResponse response) throws FailedAuthenticationException, TokenExpiredException {
-        applicationService.getNewAccessToken(refreshToken, response);
+    public Object refreshToken(@RequestHeader("Bearer") String refreshToken, HttpServletResponse response) throws FailedAuthenticationException, TokenExpiredException {
+        return applicationService.getNewAccessToken(refreshToken, response);
     }
 
     @RequestMapping(value = "/sign-up", method = RequestMethod.POST)

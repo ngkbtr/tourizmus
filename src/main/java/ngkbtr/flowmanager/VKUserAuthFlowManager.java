@@ -3,6 +3,7 @@ package ngkbtr.flowmanager;
 import com.google.gson.Gson;
 import ngkbtr.common.auth.AuthHelper;
 import ngkbtr.common.auth.model.Token;
+import ngkbtr.controller.request.AuthTokenResponse;
 import ngkbtr.controller.request.VKUserAuthRequest;
 import ngkbtr.model.User;
 import ngkbtr.model.auth.SecurityInfo;
@@ -30,7 +31,7 @@ public class VKUserAuthFlowManager {
         this.validationService = validationService;
     }
 
-    public User authVKUser(VKUserAuthRequest request, HttpServletResponse response) throws FailedAuthenticationException {
+    public AuthTokenResponse authVKUser(VKUserAuthRequest request, HttpServletResponse response) throws FailedAuthenticationException {
         if(validationService.validateVkAuthUser(request)) {
             String uid = AuthHelper.createUserId(request.getSession().getUser().getId());
             User user = storageService.getUserById(uid);
@@ -39,10 +40,16 @@ public class VKUserAuthFlowManager {
                 Token authToken = AuthHelper.createAccessToken(securityInfo.getUid());
                 Token refreshToken = securityInfo.updateRefreshToken(securityInfo.getUid());
                 storageService.saveSecurityInfo(securityInfo);
-                response.addCookie(new Cookie("access_token", authToken.getToken()));
+                /*response.addCookie(new Cookie("access_token", authToken.getToken()));
                 response.addCookie(new Cookie("expires_in", authToken.getExpiration()));
-                response.addCookie(new Cookie("refresh_token", refreshToken.getToken()));
-                return user;
+                response.addCookie(new Cookie("refresh_token", refreshToken.getToken()));*/
+
+                AuthTokenResponse authTokenResponse = new AuthTokenResponse();
+                authTokenResponse.setAccessToken(authToken.getToken());
+                authTokenResponse.setRefreshToken(refreshToken.getToken());
+                authTokenResponse.setExpiresIn(authToken.getExpiration());
+
+                return authTokenResponse;
             } else {
                 user = new User(uid);
                 UserInfo userInfo = UserInfo.builder()
@@ -55,10 +62,15 @@ public class VKUserAuthFlowManager {
                 SecurityInfo securityInfo = new SecurityInfo(user.getUid(), null);
                 storageService.saveSecurityInfo(securityInfo);
                 Token authToken = AuthHelper.createAccessToken(user.getUid());
-                response.addCookie(new Cookie("access_token", authToken.getToken()));
+                /*response.addCookie(new Cookie("access_token", authToken.getToken()));
                 response.addCookie(new Cookie("expires_in", authToken.getExpiration()));
-                response.addCookie(new Cookie("refresh_token", securityInfo.getRefreshToken()));
-                return user;
+                response.addCookie(new Cookie("refresh_token", securityInfo.getRefreshToken()));*/
+                AuthTokenResponse authTokenResponse = new AuthTokenResponse();
+                authTokenResponse.setAccessToken(authToken.getToken());
+                authTokenResponse.setRefreshToken(securityInfo.getRefreshToken());
+                authTokenResponse.setExpiresIn(authToken.getExpiration());
+
+                return authTokenResponse;
             }
         } else {
             throw new FailedAuthenticationException();
