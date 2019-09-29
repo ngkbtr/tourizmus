@@ -30,7 +30,7 @@ public class AviasalesFlowManager {
     private static final String REDIRECT_TO_BUY_URL = "https://www.aviasales.ru/search/%s%s%s%s%s%s1?ticket=%s";
     private static final String AUTH_TOKEN = "5c14f2fc70f4e1a246019c8080a225a1";
 
-    public Set<CityAutocompleteObject> getCityAutocomplete(User user, GetCityAutocompleteRequest request){
+    public CityAutocompleteObject getCityAutocomplete(User user, GetCityAutocompleteRequest request){
 
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -38,7 +38,7 @@ public class AviasalesFlowManager {
         headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         ResponseEntity<CityAutocompleteObject[]> responseEntity = template.exchange(String.format(GET_CITY_AUTOCOMPLETE_URL, request.getTerm()), HttpMethod.GET, entity, CityAutocompleteObject[].class);
-        return Arrays.stream(responseEntity.getBody()).filter(n -> StringUtils.hasText(n.getCityName())).collect(Collectors.toSet());
+        return Arrays.stream(responseEntity.getBody()).filter(n -> StringUtils.hasText(n.getCityName()) && n.getCityName().equals(request.getTerm())).findAny().orElseThrow(() -> new RuntimeException("Invalid input '" + request.getTerm() + "'"));
     }
 
     public List<FlightDirection> getDirectionParameters(User user, GetFlightsRequest request){

@@ -115,7 +115,7 @@ public class AuthHelper {
     }
 
     public static String createAccessTokenExpiration() {
-        return String.valueOf(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30));
+        return String.valueOf(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(180));
     }
 
     public static String createRefreshTokenExpiration() {

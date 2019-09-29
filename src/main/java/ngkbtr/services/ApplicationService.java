@@ -62,7 +62,7 @@ public class ApplicationService {
         return aviasalesFlowManager.getDirectionParameters(user, request);
     }
 
-    public Set<CityAutocompleteObject> getCityAutocomplete(User user, GetCityAutocompleteRequest request){
+    public CityAutocompleteObject getCityAutocomplete(User user, GetCityAutocompleteRequest request){
         return aviasalesFlowManager.getCityAutocomplete(user, request);
     }
 

@@ -1,5 +1,7 @@
 package ngkbtr.flowmanager;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.math.BigDecimal;
 
 public class Entertainment {
@@ -16,7 +18,8 @@ public class Entertainment {
     private Double duration;
     private Price price;
     private Double rating;
-    private City city;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private transient City city;
     private Photo[] photos;
     private String status;
 

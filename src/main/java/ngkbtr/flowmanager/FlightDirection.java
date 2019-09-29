@@ -1,5 +1,7 @@
 package ngkbtr.flowmanager;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -16,7 +18,8 @@ public class FlightDirection {
     private Long number_of_changes;
     private String gate;
     private String found_at;
-    private Flight[][] flights;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private transient Flight[][] flights;
     private Long duration;
     private Boolean direct;
     private String destination_name;
